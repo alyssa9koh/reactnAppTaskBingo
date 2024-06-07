@@ -5,24 +5,27 @@ function BingoSquare() {
     const [pressed, setPressed] = useState(false);
 
     return (
-        <View style={styles.bingoSquare}>
-            <TouchableOpacity
-                style={styles.bingoSquareTouchable}
-                activeOpacity={0.7} 
-                onPress={() => {
-                    setPressed(!pressed);
-                    console.log("Square pressed");
-                }}
+        <TouchableOpacity
+            style={styles.bingoSquare}
+            activeOpacity={0.7} 
+            onPress={() => {
+                setPressed(!pressed);
+            }}
+        >
+            <Text 
+                style={[styles.bingoSquareText, pressed && styles.bingoSquareTextPressed]}
             >
-                <Text style={[styles.bingoSquareText, pressed && styles.bingoSquareTextPressed]}>I am bingo square</Text>
-            </TouchableOpacity>
-        </View>
+                I am bingo square
+            </Text>
+        </TouchableOpacity>
     )
 }
 
 function BingoRow() {
     return (
         <View style={styles.bingoRow}>
+            <BingoSquare/>
+            <BingoSquare/>
             <BingoSquare/>
             <BingoSquare/>
             <BingoSquare/>
@@ -33,6 +36,8 @@ function BingoRow() {
 export default function BingoBoard() {
     return (
         <View style={styles.bingoBoard}>
+            <BingoRow/>
+            <BingoRow/>
             <BingoRow/>
             <BingoRow/>
             <BingoRow/>
@@ -48,18 +53,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     bingoSquare: {
-        aspectRatio: '1/1',
-        marginLeft: 1
-    },
-    bingoSquareTouchable: {
+        aspectRatio: 1,
+        width: '20%',
         backgroundColor: 'gray',
-        width: '100%',
-        height: '100%',
         justifyContent: 'center',
         alignItems: 'center'
     },
     bingoSquareText: {
-        color: 'white'
+        color: 'white',
+        textAlign: 'center'
     },
     bingoSquareTextPressed: {
         opacity: 0.2
