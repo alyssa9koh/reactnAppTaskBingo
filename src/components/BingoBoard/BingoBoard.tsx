@@ -63,7 +63,8 @@ function BingoRow({ tasks, onPressSquare, onLongPressSquare, pressedSquares }) {
     )
 }
 
-export default function BingoBoard({ size, initialTasks, initialPressedSquares, initialPressedCount }) {
+export default function BingoBoard({ size, initialTitle, initialTasks, initialPressedSquares, initialPressedCount }) {
+    const [title, setTitle] = useState(initialTitle);
     const [tasks, setTasks] = useState(initialTasks);
     const [pressedSquares, setPressedSquares] = useState(initialPressedSquares);
     const [pressedCount, setPressedCount] = useState(initialPressedCount);
@@ -128,8 +129,30 @@ export default function BingoBoard({ size, initialTasks, initialPressedSquares, 
         setDiagonalsFilled(diagonalsFilledCount);
     }, [pressedSquares]);
 
+    const [titleDialogVisible, setTitleDialogVisible] = useState(false);
+    const [titleInputValue, setTitleInputValue] = useState(initialTitle);
+
+    const handleTitlePress = () => {
+        setTitleDialogVisible(true);
+    }
+
+    const handleCancel = () => {
+        setTitleDialogVisible(false);
+    }
+
+    const handleChange = () => {
+        setTitle(titleInputValue);
+        setTitleDialogVisible(false);
+    }
+
     return (
         <View style={styles.bingoBoard}>
+            <TouchableOpacity 
+                activeOpacity={0.7}
+                onLongPress={handleTitlePress}
+            >
+                <Text style={styles.bingoBoardTitle}>{title}</Text>
+            </TouchableOpacity>
             {[...Array(size).keys()].map(row => (
                 <BingoRow
                     key={row}
@@ -145,6 +168,18 @@ export default function BingoBoard({ size, initialTasks, initialPressedSquares, 
             {pressedCount === size ** 2 &&
                 <Text>BLACKOUT!</Text>
             }
+            <Dialog.Container visible={titleDialogVisible}>
+                <Dialog.Title>
+                    Change Task
+                </Dialog.Title>
+                <Dialog.Input
+                    placeholder="Type here"
+                    onChangeText={(text) => setTitleInputValue(text)}
+                    value={titleInputValue}
+                />
+                <Dialog.Button label="Cancel" onPress={handleCancel} />
+                <Dialog.Button label="Change" onPress={handleChange} />
+            </Dialog.Container>
         </View>
     );
 }
@@ -152,6 +187,11 @@ export default function BingoBoard({ size, initialTasks, initialPressedSquares, 
 const styles = StyleSheet.create({
     bingoBoard: {
         flexDirection: 'column'
+    },
+    bingoBoardTitle: {
+        textAlign: 'center',
+        marginBottom: '7.5%',
+        fontSize: 28
     },
     bingoRow: {
         flexDirection: 'row',
