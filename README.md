@@ -28,5 +28,6 @@ Allow the user to share the bingo board and current process by saving as an imag
 
 * Project start: 26 March 2024
 * Basic repo setup: 7 June 2024
+* Basic bingo board created: 7 June 2024
 
 ## References used
