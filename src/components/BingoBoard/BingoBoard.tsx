@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Dialog from "react-native-dialog";
 
@@ -68,6 +68,10 @@ export default function BingoBoard() {
     const [pressedSquares, setPressedSquares] = useState(Array(25).fill(false));
     const [pressedCount, setPressedCount] = useState(0);
 
+    const [columnsFilled, setColumnsFilled] = useState(0);
+    const [rowsFilled, setRowsFilled] = useState(0);
+    const [diagonalFilled, setDiagonalsFilled] = useState(0);
+
     const handlePressSquare = (index) => {
         const newPressedSquares = [...pressedSquares];
         newPressedSquares[index] = !newPressedSquares[index];
@@ -77,7 +81,6 @@ export default function BingoBoard() {
         } else {
             setPressedCount(pressedCount + 1);
         }
-        console.log(pressedCount);
     }
 
     const handleLongPressSquare = (index, newTask) => {
@@ -85,6 +88,43 @@ export default function BingoBoard() {
         newTasks[index] = newTask;
         setTasks(newTasks);
     };
+
+    useEffect(() => {
+        // Check rows
+        let rowsFilledCount = 0;
+        for (let row = 0; row < 5; row++) {
+            if (pressedSquares.slice(row * 5, row * 5 + 5).every(Boolean)) {
+                rowsFilledCount++;
+            }
+        }
+        setRowsFilled(rowsFilledCount);
+
+        // Check columns
+        let columnsFilledCount = 0;
+        for (let col = 0; col < 5; col++) {
+            let columnFilled = true;
+            for (let row = 0; row < 5; row++) {
+                if (!pressedSquares[row * 5 + col]) {
+                    columnFilled = false;
+                    break;
+                }
+            }
+            if (columnFilled) {
+                columnsFilledCount++;
+            }
+        }
+        setColumnsFilled(columnsFilledCount);
+
+        // Check diagonals
+        let diagonalsFilledCount = 0;
+        if ([0, 6, 12, 18, 24].every(index => pressedSquares[index])) {
+            diagonalsFilledCount++;
+        }
+        if ([4, 8, 12, 16, 20].every(index => pressedSquares[index])) {
+            diagonalsFilledCount++;
+        }
+        setDiagonalsFilled(diagonalsFilledCount);
+    }, [pressedSquares]);
 
     return (
         <View style={styles.bingoBoard}>
@@ -97,9 +137,9 @@ export default function BingoBoard() {
                     onLongPressSquare={(index, newTask) => handleLongPressSquare(row * 5 + index, newTask)}
                 />
             ))}
-            {/* {pressedCount === 25 && (
-                <Text style={styles.boardFilledText}>The board is completely filled out!</Text>
-            )} */}
+            <Text>{`${columnsFilled} columns filled`}</Text>
+            <Text>{`${rowsFilled} rows filled`}</Text>
+            <Text>{`${diagonalFilled} diagonals filled`}</Text>
             {pressedCount === 25 &&
                 <Text>BLACKOUT!</Text>
             }
