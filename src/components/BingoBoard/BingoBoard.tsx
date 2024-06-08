@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Dialog from "react-native-dialog";
 
-function BingoSquare() {
-    const [pressed, setPressed] = useState(false);
-    const [task, setTask] = useState('default task');
-
+function BingoSquare({ onPressSquare, onLongPressSquare, task, pressed }) {
     const [visible, setVisible] = useState(false);
     const [inputValue, setInputValue] = useState(task);
 
@@ -18,7 +15,7 @@ function BingoSquare() {
     };
 
     const handleChange = () => {
-        setTask(inputValue);
+        onLongPressSquare(inputValue);
         setVisible(false);
     }
 
@@ -26,12 +23,8 @@ function BingoSquare() {
         <TouchableOpacity
             style={styles.bingoSquare}
             activeOpacity={0.7} 
-            onPress={() => {
-                setPressed(!pressed);
-            }}
-            onLongPress={()=>{
-                showDialog();
-            }}
+            onPress={onPressSquare}
+            onLongPress={showDialog}
         >
             <Text 
                 style={[styles.bingoSquareText, pressed && styles.bingoSquareTextPressed]}
@@ -54,26 +47,102 @@ function BingoSquare() {
     )
 }
 
-function BingoRow() {
+function BingoRow({ tasks, onPressSquare, onLongPressSquare, pressedSquares }) {
     return (
         <View style={styles.bingoRow}>
-            <BingoSquare/>
-            <BingoSquare/>
-            <BingoSquare/>
-            <BingoSquare/>
-            <BingoSquare/>
+            {tasks.map((task, index) => (
+                <BingoSquare
+                    key={index}
+                    task={task}
+                    pressed={pressedSquares[index]}
+                    onPressSquare={() => onPressSquare(index)}
+                    onLongPressSquare={(newTask) => onLongPressSquare(index, newTask)}
+                />
+            ))}
         </View>
     )
 }
 
 export default function BingoBoard() {
+    const [tasks, setTasks] = useState(Array(25).fill('default task'));
+    const [pressedSquares, setPressedSquares] = useState(Array(25).fill(false));
+    const [pressedCount, setPressedCount] = useState(0);
+
+    const [columnsFilled, setColumnsFilled] = useState(0);
+    const [rowsFilled, setRowsFilled] = useState(0);
+    const [diagonalFilled, setDiagonalsFilled] = useState(0);
+
+    const handlePressSquare = (index) => {
+        const newPressedSquares = [...pressedSquares];
+        newPressedSquares[index] = !newPressedSquares[index];
+        setPressedSquares(newPressedSquares);
+        if (pressedSquares[index]) {
+            setPressedCount(pressedCount - 1);
+        } else {
+            setPressedCount(pressedCount + 1);
+        }
+    }
+
+    const handleLongPressSquare = (index, newTask) => {
+        const newTasks = [...tasks];
+        newTasks[index] = newTask;
+        setTasks(newTasks);
+    };
+
+    useEffect(() => {
+        // Check rows
+        let rowsFilledCount = 0;
+        for (let row = 0; row < 5; row++) {
+            if (pressedSquares.slice(row * 5, row * 5 + 5).every(Boolean)) {
+                rowsFilledCount++;
+            }
+        }
+        setRowsFilled(rowsFilledCount);
+
+        // Check columns
+        let columnsFilledCount = 0;
+        for (let col = 0; col < 5; col++) {
+            let columnFilled = true;
+            for (let row = 0; row < 5; row++) {
+                if (!pressedSquares[row * 5 + col]) {
+                    columnFilled = false;
+                    break;
+                }
+            }
+            if (columnFilled) {
+                columnsFilledCount++;
+            }
+        }
+        setColumnsFilled(columnsFilledCount);
+
+        // Check diagonals
+        let diagonalsFilledCount = 0;
+        if ([0, 6, 12, 18, 24].every(index => pressedSquares[index])) {
+            diagonalsFilledCount++;
+        }
+        if ([4, 8, 12, 16, 20].every(index => pressedSquares[index])) {
+            diagonalsFilledCount++;
+        }
+        setDiagonalsFilled(diagonalsFilledCount);
+    }, [pressedSquares]);
+
     return (
         <View style={styles.bingoBoard}>
-            <BingoRow/>
-            <BingoRow/>
-            <BingoRow/>
-            <BingoRow/>
-            <BingoRow/>
+            {[0, 1, 2, 3, 4].map(row => (
+                <BingoRow
+                    key={row}
+                    tasks={tasks.slice(row * 5, row * 5 + 5)}
+                    pressedSquares={pressedSquares.slice(row * 5, row * 5 + 5)}
+                    onPressSquare={(index) => handlePressSquare(row * 5 + index)}
+                    onLongPressSquare={(index, newTask) => handleLongPressSquare(row * 5 + index, newTask)}
+                />
+            ))}
+            <Text>{`${columnsFilled} columns filled`}</Text>
+            <Text>{`${rowsFilled} rows filled`}</Text>
+            <Text>{`${diagonalFilled} diagonals filled`}</Text>
+            {pressedCount === 25 &&
+                <Text>BLACKOUT!</Text>
+            }
         </View>
     );
 }
