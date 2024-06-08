@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Dimensions, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Dialog from "react-native-dialog";
 
 function BingoSquare({ onPressSquare, onLongPressSquare, task, pressed }) {
@@ -63,10 +63,10 @@ function BingoRow({ tasks, onPressSquare, onLongPressSquare, pressedSquares }) {
     )
 }
 
-export default function BingoBoard({ size }) {
-    const [tasks, setTasks] = useState(Array(size ** 2).fill('default task'));
-    const [pressedSquares, setPressedSquares] = useState(Array(size ** 2).fill(false));
-    const [pressedCount, setPressedCount] = useState(0);
+export default function BingoBoard({ size, initialTasks, initialPressedSquares, initialPressedCount }) {
+    const [tasks, setTasks] = useState(initialTasks);
+    const [pressedSquares, setPressedSquares] = useState(initialPressedSquares);
+    const [pressedCount, setPressedCount] = useState(initialPressedCount);
 
     const [rowsFilled, setRowsFilled] = useState(0);
     const [columnsFilled, setColumnsFilled] = useState(0);
@@ -154,7 +154,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     bingoRow: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: '100%'
     },
     bingoSquare: {
         aspectRatio: 1,

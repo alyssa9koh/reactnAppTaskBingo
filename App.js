@@ -4,9 +4,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import BingoBoard from './src/components/BingoBoard/BingoBoard';
 
 export default function App() {
+  const initialSize = 4;
+  const initialTasks = Array(initialSize ** 2).fill('default task');
+  const initialPressedSquares = Array(initialSize ** 2).fill(false);
+
   return (
     <View style={styles.container}>
-      <BingoBoard size={5}/>
+      <BingoBoard size={initialSize} initialTasks={initialTasks} initialPressedSquares={initialPressedSquares} initialPressedCount={0}/>
       <StatusBar style="auto" />
     </View>
   );
