@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Dialog from "react-native-dialog";
 
-function BingoSquare() {
-    const [pressed, setPressed] = useState(false);
-    const [task, setTask] = useState('default task');
-
+function BingoSquare({ onPressSquare, onLongPressSquare, task, pressed }) {
     const [visible, setVisible] = useState(false);
     const [inputValue, setInputValue] = useState(task);
 
@@ -18,7 +15,7 @@ function BingoSquare() {
     };
 
     const handleChange = () => {
-        setTask(inputValue);
+        onLongPressSquare(inputValue);
         setVisible(false);
     }
 
@@ -26,12 +23,8 @@ function BingoSquare() {
         <TouchableOpacity
             style={styles.bingoSquare}
             activeOpacity={0.7} 
-            onPress={() => {
-                setPressed(!pressed);
-            }}
-            onLongPress={()=>{
-                showDialog();
-            }}
+            onPress={onPressSquare}
+            onLongPress={showDialog}
         >
             <Text 
                 style={[styles.bingoSquareText, pressed && styles.bingoSquareTextPressed]}
@@ -54,26 +47,62 @@ function BingoSquare() {
     )
 }
 
-function BingoRow() {
+function BingoRow({ tasks, onPressSquare, onLongPressSquare, pressedSquares }) {
     return (
         <View style={styles.bingoRow}>
-            <BingoSquare/>
-            <BingoSquare/>
-            <BingoSquare/>
-            <BingoSquare/>
-            <BingoSquare/>
+            {tasks.map((task, index) => (
+                <BingoSquare
+                    key={index}
+                    task={task}
+                    pressed={pressedSquares[index]}
+                    onPressSquare={() => onPressSquare(index)}
+                    onLongPressSquare={(newTask) => onLongPressSquare(index, newTask)}
+                />
+            ))}
         </View>
     )
 }
 
 export default function BingoBoard() {
+    const [tasks, setTasks] = useState(Array(25).fill('default task'));
+    const [pressedSquares, setPressedSquares] = useState(Array(25).fill(false));
+    const [pressedCount, setPressedCount] = useState(0);
+
+    const handlePressSquare = (index) => {
+        const newPressedSquares = [...pressedSquares];
+        newPressedSquares[index] = !newPressedSquares[index];
+        setPressedSquares(newPressedSquares);
+        if (pressedSquares[index]) {
+            setPressedCount(pressedCount - 1);
+        } else {
+            setPressedCount(pressedCount + 1);
+        }
+        console.log(pressedCount);
+    }
+
+    const handleLongPressSquare = (index, newTask) => {
+        const newTasks = [...tasks];
+        newTasks[index] = newTask;
+        setTasks(newTasks);
+    };
+
     return (
         <View style={styles.bingoBoard}>
-            <BingoRow/>
-            <BingoRow/>
-            <BingoRow/>
-            <BingoRow/>
-            <BingoRow/>
+            {[0, 1, 2, 3, 4].map(row => (
+                <BingoRow
+                    key={row}
+                    tasks={tasks.slice(row * 5, row * 5 + 5)}
+                    pressedSquares={pressedSquares.slice(row * 5, row * 5 + 5)}
+                    onPressSquare={(index) => handlePressSquare(row * 5 + index)}
+                    onLongPressSquare={(index, newTask) => handleLongPressSquare(row * 5 + index, newTask)}
+                />
+            ))}
+            {/* {pressedCount === 25 && (
+                <Text style={styles.boardFilledText}>The board is completely filled out!</Text>
+            )} */}
+            {pressedCount === 25 &&
+                <Text>BLACKOUT!</Text>
+            }
         </View>
     );
 }
