@@ -63,13 +63,13 @@ function BingoRow({ tasks, onPressSquare, onLongPressSquare, pressedSquares }) {
     )
 }
 
-export default function BingoBoard() {
-    const [tasks, setTasks] = useState(Array(25).fill('default task'));
-    const [pressedSquares, setPressedSquares] = useState(Array(25).fill(false));
+export default function BingoBoard({ size }) {
+    const [tasks, setTasks] = useState(Array(size ** 2).fill('default task'));
+    const [pressedSquares, setPressedSquares] = useState(Array(size ** 2).fill(false));
     const [pressedCount, setPressedCount] = useState(0);
 
-    const [columnsFilled, setColumnsFilled] = useState(0);
     const [rowsFilled, setRowsFilled] = useState(0);
+    const [columnsFilled, setColumnsFilled] = useState(0);
     const [diagonalFilled, setDiagonalsFilled] = useState(0);
 
     const handlePressSquare = (index) => {
@@ -92,8 +92,8 @@ export default function BingoBoard() {
     useEffect(() => {
         // Check rows
         let rowsFilledCount = 0;
-        for (let row = 0; row < 5; row++) {
-            if (pressedSquares.slice(row * 5, row * 5 + 5).every(Boolean)) {
+        for (let row = 0; row < size; row++) {
+            if (pressedSquares.slice(row * size, row * size + size).every(Boolean)) {
                 rowsFilledCount++;
             }
         }
@@ -101,10 +101,10 @@ export default function BingoBoard() {
 
         // Check columns
         let columnsFilledCount = 0;
-        for (let col = 0; col < 5; col++) {
+        for (let col = 0; col < size; col++) {
             let columnFilled = true;
-            for (let row = 0; row < 5; row++) {
-                if (!pressedSquares[row * 5 + col]) {
+            for (let row = 0; row < size; row++) {
+                if (!pressedSquares[row * size + col]) {
                     columnFilled = false;
                     break;
                 }
@@ -117,10 +117,12 @@ export default function BingoBoard() {
 
         // Check diagonals
         let diagonalsFilledCount = 0;
-        if ([0, 6, 12, 18, 24].every(index => pressedSquares[index])) {
+        const leftDiagonalIndices = Array.from({ length: size }, (_, index) => index * (size + 1));
+        if (leftDiagonalIndices.every(index => pressedSquares[index])) {
             diagonalsFilledCount++;
         }
-        if ([4, 8, 12, 16, 20].every(index => pressedSquares[index])) {
+        const rightDiagonalIndices = Array.from({ length: size }, (_, index) => (index + 1) * (size - 1));
+        if (rightDiagonalIndices.every(index => pressedSquares[index])) {
             diagonalsFilledCount++;
         }
         setDiagonalsFilled(diagonalsFilledCount);
@@ -128,19 +130,19 @@ export default function BingoBoard() {
 
     return (
         <View style={styles.bingoBoard}>
-            {[0, 1, 2, 3, 4].map(row => (
+            {[...Array(size).keys()].map(row => (
                 <BingoRow
                     key={row}
-                    tasks={tasks.slice(row * 5, row * 5 + 5)}
-                    pressedSquares={pressedSquares.slice(row * 5, row * 5 + 5)}
-                    onPressSquare={(index) => handlePressSquare(row * 5 + index)}
-                    onLongPressSquare={(index, newTask) => handleLongPressSquare(row * 5 + index, newTask)}
+                    tasks={tasks.slice(row * size, row * size + size)}
+                    pressedSquares={pressedSquares.slice(row * size, row * size + size)}
+                    onPressSquare={(index) => handlePressSquare(row * size + index)}
+                    onLongPressSquare={(index, newTask) => handleLongPressSquare(row * size + index, newTask)}
                 />
             ))}
-            <Text>{`${columnsFilled} columns filled`}</Text>
             <Text>{`${rowsFilled} rows filled`}</Text>
+            <Text>{`${columnsFilled} columns filled`}</Text>
             <Text>{`${diagonalFilled} diagonals filled`}</Text>
-            {pressedCount === 25 &&
+            {pressedCount === size ** 2 &&
                 <Text>BLACKOUT!</Text>
             }
         </View>

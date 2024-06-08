@@ -6,7 +6,7 @@ import BingoBoard from './src/components/BingoBoard/BingoBoard';
 export default function App() {
   return (
     <View style={styles.container}>
-      <BingoBoard/>
+      <BingoBoard size={5}/>
       <StatusBar style="auto" />
     </View>
   );
