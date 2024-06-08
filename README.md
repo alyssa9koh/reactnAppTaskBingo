@@ -30,5 +30,6 @@ Allow the user to share the bingo board and current process by saving as an imag
 * Basic repo setup: 7 June 2024
 * Basic bingo board created: 7 June 2024
 * Detect filled out rows, columns, and diagonals: 7 June 2024
+* BingoBoard component can easily change size: 8 June 2024
 
 ## References used
