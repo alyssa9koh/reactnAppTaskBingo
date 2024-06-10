@@ -15,7 +15,7 @@ function HomeItem({ navigation, listItem }) {
     return (
         <TouchableOpacity 
             style={styles.homeItem}
-            onPress={() => navigation.navigate('Board', mock_1)}
+            onPress={() => navigation.navigate('Board', listItem[0])}
         >
             <Text style={styles.homeItemText}>{listItem[1]}</Text>
         </TouchableOpacity>

@@ -4,10 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import uuid from 'react-native-uuid';
 
-import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY } from '../utils/defaults';
+import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE } from '../utils/defaults';
+
+import ClearStorage from '../utils/dev_tools/clearStorage';
 
 export default function AddBoardScreen({ navigation }) {
-    const [textInput, setTextInput] = useState('My Bingo Board');
+    const [textInput, setTextInput] = useState(DEFAULT_TITLE);
     const [sizeInput, setSizeInput] = useState(DEFAULT_SIZE);
 
     function handleTextChange(value) {
@@ -73,17 +75,7 @@ export default function AddBoardScreen({ navigation }) {
                 title={'Create Board'} 
                 onPress={handleCreateBoard}
             />
-            <Button
-                title={'Dev tool: Clear everything'}
-                onPress={async () => {
-                    try {
-                        await AsyncStorage.clear();
-                        console.log('Dev message: Storage is cleared.');
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }}
-            />
+            <ClearStorage/>
         </View>
     )
 }
