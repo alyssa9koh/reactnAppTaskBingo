@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, StyleSheet, View, Text, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
@@ -32,9 +32,9 @@ export default function AddBoardScreen({ navigation }) {
         const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
         let updatedBoardList;
         if (storedBoardList) {
-            updatedBoardList = [newBoard.uuid, ...JSON.parse(storedBoardList)];
+            updatedBoardList = [[newBoard.uuid, textInput], ...JSON.parse(storedBoardList)];
         } else {
-            updatedBoardList = [newBoard.uuid];
+            updatedBoardList = [[newBoard.uuid, textInput]];
         }
 
         console.log(JSON.stringify(updatedBoardList));
