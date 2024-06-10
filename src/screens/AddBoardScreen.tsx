@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import uuid from 'react-native-uuid';
 
-import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE } from '../utils/defaults';
+import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY } from '../utils/defaults';
 
 export default function AddBoardScreen({ navigation }) {
     const [textInput, setTextInput] = useState('My Bingo Board');
@@ -18,12 +18,33 @@ export default function AddBoardScreen({ navigation }) {
         setSizeInput(value);
     }
 
-    function handleCreateBoard() {
+    async function handleCreateBoard() {
         const newUUID = uuid.v4();
-        console.log(`i cooka da new board`);
-        console.log(`new board uuid: ${newUUID}`);
-        console.log(`new board name: ${textInput}`);
-        console.log(`new board size: ${sizeInput}`);
+
+        const newBoard = {
+            uuid: uuid.v4(),
+            title: textInput,
+            size: sizeInput,
+            tasks: Array(sizeInput ** 2).fill('default task'),
+            pressedSquares: Array(sizeInput ** 2).fill(false)
+        };
+
+        const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
+        let updatedBoardList;
+        if (storedBoardList) {
+            updatedBoardList = [newBoard.uuid, ...JSON.parse(storedBoardList)];
+        } else {
+            updatedBoardList = [newBoard.uuid];
+        }
+
+        console.log(JSON.stringify(updatedBoardList));
+
+        try {
+            await AsyncStorage.setItem(BOARD_UUID_LIST_KEY, JSON.stringify(updatedBoardList));
+            await AsyncStorage.setItem(JSON.stringify(newBoard.uuid), JSON.stringify(newBoard));
+        } catch (error) {
+            console.log(error);
+        }
     }
     
     return (
@@ -50,6 +71,17 @@ export default function AddBoardScreen({ navigation }) {
             <Button 
                 title={'Create Board'} 
                 onPress={handleCreateBoard}
+            />
+            <Button
+                title={'Dev tool: Clear everything'}
+                onPress={async () => {
+                    try {
+                        await AsyncStorage.clear();
+                        console.log('Dev message: Storage is cleared.');
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }}
             />
         </View>
     )
