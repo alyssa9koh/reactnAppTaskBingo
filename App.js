@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BoardScreen from './src/screens/BoardScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import AddBoardScreen from './src/screens/AddBoardScreen';
 
 import BingoBoard from './src/components/BingoBoard/BingoBoard';
 
@@ -14,8 +15,20 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name={'Home'} component={HomeScreen} />
-        <Stack.Screen name={'Board'} component={BoardScreen} options={{ title: 'meow' }} />
+        <Stack.Screen 
+          name={'Home'} 
+          component={HomeScreen} 
+          options={({ navigation }) => ({
+            headerRight: () => (
+              <Button
+                title={'+'}
+                onPress={() => navigation.navigate('AddBoard')}
+              />
+            )
+          })}
+        />
+        <Stack.Screen name={'Board'} component={BoardScreen} />
+        <Stack.Screen name={'AddBoard'} component={AddBoardScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
