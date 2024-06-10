@@ -31,6 +31,8 @@ export default function HomeScreen({ navigation }) {
                 const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
                 if (storedBoardList) {
                     setBoardUUIDList(JSON.parse(storedBoardList));
+                } else {
+                    setBoardUUIDList([]);
                 }
             } catch (error) {
                 console.error('Failed to load stored board list', error);

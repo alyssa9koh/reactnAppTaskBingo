@@ -42,6 +42,7 @@ export default function AddBoardScreen({ navigation }) {
         try {
             await AsyncStorage.setItem(BOARD_UUID_LIST_KEY, JSON.stringify(updatedBoardList));
             await AsyncStorage.setItem(JSON.stringify(newBoard.uuid), JSON.stringify(newBoard));
+            navigation.goBack();
         } catch (error) {
             console.log(error);
         }
