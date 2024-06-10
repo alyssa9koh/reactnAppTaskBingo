@@ -1,19 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import BoardScreen from './src/screens/BoardScreen';
+import HomeScreen from './src/screens/HomeScreen';
 
 import BingoBoard from './src/components/BingoBoard/BingoBoard';
 
-export default function App() {
-  const defaultTitle = 'My Bingo Board';
-  const initialSize = 5;
-  const initialTasks = Array(initialSize ** 2).fill('default task');
-  const initialPressedSquares = Array(initialSize ** 2).fill(false);
+const Stack = createNativeStackNavigator();
 
+export default function App() {
   return (
-    <View style={styles.container}>
-      <BingoBoard size={initialSize} initialTitle={defaultTitle} initialTasks={initialTasks} initialPressedSquares={initialPressedSquares} initialPressedCount={0}/>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name={'Home'} component={HomeScreen} />
+        <Stack.Screen name={'Board'} component={BoardScreen} options={{ title: 'meow' }} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
