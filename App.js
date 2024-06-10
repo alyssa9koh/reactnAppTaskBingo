@@ -22,13 +22,13 @@ export default function App() {
             headerRight: () => (
               <Button
                 title={'+'}
-                onPress={() => navigation.navigate('AddBoard')}
+                onPress={() => navigation.navigate('Add Board')}
               />
             )
           })}
         />
         <Stack.Screen name={'Board'} component={BoardScreen} />
-        <Stack.Screen name={'AddBoard'} component={AddBoardScreen} />
+        <Stack.Screen name={'Add Board'} component={AddBoardScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
