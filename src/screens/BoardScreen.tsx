@@ -3,13 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import BingoBoard from '../components/BingoBoard/BingoBoard';
-import { DEFAULT_SIZE } from '../utils/defaults';
+import { DEFAULT_PRESSED_SQUARES, DEFAULT_SIZE, DEFAULT_TASKS } from '../utils/defaults';
 
 export default function BoardScreen({ route }) {
     const {
         title = 'My Bingo Board',
-        tasks = Array(DEFAULT_SIZE ** 2).fill('default task'),
-        pressedSquares = Array(DEFAULT_SIZE ** 2).fill(false)
+        tasks = DEFAULT_TASKS,
+        pressedSquares = DEFAULT_PRESSED_SQUARES
     } = route.params || {};
 
     return (

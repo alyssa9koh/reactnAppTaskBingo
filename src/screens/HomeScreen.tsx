@@ -1,7 +1,8 @@
+import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { DEFAULT_SIZE } from '../utils/defaults';
+import { BOARD_UUID_LIST_KEY, DEFAULT_SIZE } from '../utils/defaults';
 
 const mock_1 = {
     title: 'My Bingo Board',
@@ -10,21 +11,40 @@ const mock_1 = {
     pressedSquares: Array(DEFAULT_SIZE ** 2).fill(false)
 };
 
+function HomeItem({ navigation, listItem }) {
+    return (
+        <TouchableOpacity 
+            style={styles.homeItem}
+            onPress={() => navigation.navigate('Board', mock_1)}
+        >
+            <Text style={styles.homeItemText}>{listItem[1]}</Text>
+        </TouchableOpacity>
+    );
+}
+
 export default function HomeScreen({ navigation }) {
+    const [boardUUIDList, setBoardUUIDList] = useState([]);
+
+    useEffect(() => {
+        const loadStoredBoardList = async () => {
+            try {
+                const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
+                if (storedBoardList) {
+                    setBoardUUIDList(JSON.parse(storedBoardList));
+                }
+            } catch (error) {
+                console.error('Failed to load stored board list', error);
+            }
+        };
+    
+        loadStoredBoardList();
+    });
+
     return (
         <View>
-            <TouchableOpacity 
-                style={styles.homeItem}
-                onPress={() => navigation.navigate('Board', mock_1)}
-            >
-                <Text style={styles.homeItemText}>{mock_1.title}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.homeItem}
-                onPress={() => navigation.navigate('Board', mock_1)}
-            >
-                <Text style={styles.homeItemText}>{mock_1.title}</Text>
-            </TouchableOpacity>
+            {boardUUIDList.map((listItem, index) => (
+                <HomeItem key={index} navigation={navigation} listItem={listItem} />
+            ))}
         </View>
     );
 }
