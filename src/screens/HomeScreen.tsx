@@ -1,4 +1,5 @@
-import { Button, Text, View } from 'react-native';
+import { Button, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { DEFAULT_SIZE } from '../utils/defaults';
 
@@ -11,11 +12,30 @@ const mock_1 = {
 
 export default function HomeScreen({ navigation }) {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Button
-                title="Go to Bingo Board"
+        <View>
+            <TouchableOpacity 
+                style={styles.homeItem}
                 onPress={() => navigation.navigate('Board', mock_1)}
-            />
+            >
+                <Text style={styles.homeItemText}>{mock_1.title}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+                style={styles.homeItem}
+                onPress={() => navigation.navigate('Board', mock_1)}
+            >
+                <Text style={styles.homeItemText}>{mock_1.title}</Text>
+            </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    homeItem: {
+        backgroundColor: 'gray',
+        padding: 10,
+        marginBottom: 3
+    },
+    homeItemText: {
+        fontSize: 20
+    }
+}); 

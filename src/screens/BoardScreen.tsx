@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Button, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import BingoBoard from '../components/BingoBoard/BingoBoard';
 import { DEFAULT_SIZE } from '../utils/defaults';
@@ -31,5 +32,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
-    },
+    }
 });  
