@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, View, Text, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
+import uuid from 'react-native-uuid';
 
 import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE } from '../utils/defaults';
 
@@ -18,7 +19,9 @@ export default function AddBoardScreen({ navigation }) {
     }
 
     function handleCreateBoard() {
+        const newUUID = uuid.v4();
         console.log(`i cooka da new board`);
+        console.log(`new board uuid: ${newUUID}`);
         console.log(`new board name: ${textInput}`);
         console.log(`new board size: ${sizeInput}`);
     }
