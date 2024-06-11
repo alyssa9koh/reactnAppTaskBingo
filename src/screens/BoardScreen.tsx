@@ -16,7 +16,6 @@ export default function BoardScreen({ route }) {
         const getBoardInfo = async () => {
             try {
                 const boardInfoJSON = await AsyncStorage.getItem(JSON.stringify(uuid));
-                console.log(boardInfoJSON);
                 const boardInfo = JSON.parse(boardInfoJSON);
                 setTitle(boardInfo.title);
                 setTasks(boardInfo.tasks);
@@ -25,6 +24,8 @@ export default function BoardScreen({ route }) {
                 console.log(error);
             }
         }
+
+        getBoardInfo();
     });
 
     return (
