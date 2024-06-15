@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, StyleSheet, View, Text, TextInput } from 'react-native';
+import { Button, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import uuid from 'react-native-uuid';
 
-import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE } from '../utils/defaults';
+import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE, SELECTED_COLOR } from '../utils/defaults';
 
 import ClearStorage from '../utils/dev_tools/clearStorage';
 
@@ -18,6 +18,13 @@ export default function AddBoardScreen({ navigation }) {
 
     function handleSizeChange(value) {
         setSizeInput(value);
+    }
+
+    const [selectedTab, setSelectedTab] = useState(1);
+    const tabs = ['Custom Layout', 'Randomized Layout', 'Randomized Tasks'];
+
+    function handleTabSelect(index) {
+        setSelectedTab(index);
     }
 
     async function handleCreateBoard() {
@@ -59,6 +66,23 @@ export default function AddBoardScreen({ navigation }) {
                 value={titleInput}
                 onChangeText={handleTitleChange}
             />
+            <View style={styles.tabsContainer}>
+                {tabs.map((tabName, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        onPress={() => {handleTabSelect(index)}}
+                        style={[
+                            styles.tab,
+                            selectedTab === index && styles.selectedTab
+                        ]}
+                    >
+                        <Text style={[
+                            styles.tabText,
+                            selectedTab === index && styles.selectedTabText
+                        ]}>{tabName}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
             <View style={styles.sizeSelect}>
                 <Text style={styles.text}>{`${sizeInput}x${sizeInput} board`}</Text>
                 <Slider
@@ -99,6 +123,29 @@ const styles = StyleSheet.create({
         width: '75%',
         textAlign: 'center',
         backgroundColor: 'white'
+    },
+    tabsContainer: {
+        flexDirection: 'row',
+        width: '90%',
+        justifyContent: 'center',
+        alignContent: 'center'
+    },
+    tab: {
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 15,
+        marginRight: 5,
+        width: '30%',
+        justifyContent: 'center'
+    },
+    selectedTab: {
+        backgroundColor: SELECTED_COLOR
+    },
+    tabText: {
+        textAlign: 'center'
+    },
+    selectedTabText: {
+        color: 'white'
     },
     sizeSelect: {
         margin: 25,
