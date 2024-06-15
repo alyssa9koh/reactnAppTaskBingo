@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { BOARD_UUID_LIST_KEY, DEFAULT_SIZE } from '../utils/defaults';
 
@@ -11,11 +12,11 @@ const mock_1 = {
     pressedSquares: Array(DEFAULT_SIZE ** 2).fill(false)
 };
 
-function HomeItem({ navigation, listItem }) {
+function HomeItem({ navigation, listItem, boardUUIDList }) {
     return (
         <TouchableOpacity 
             style={styles.homeItem}
-            onPress={() => navigation.navigate('Board', mock_1)}
+            onPress={() => navigation.navigate('Board', { uuid: listItem[0], boardUUIDList: boardUUIDList })}
         >
             <Text style={styles.homeItemText}>{listItem[1]}</Text>
         </TouchableOpacity>
@@ -25,25 +26,30 @@ function HomeItem({ navigation, listItem }) {
 export default function HomeScreen({ navigation }) {
     const [boardUUIDList, setBoardUUIDList] = useState([]);
 
-    useEffect(() => {
-        const loadStoredBoardList = async () => {
-            try {
-                const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
-                if (storedBoardList) {
-                    setBoardUUIDList(JSON.parse(storedBoardList));
+    useFocusEffect(
+        useCallback(() => {
+            const loadStoredBoardList = async () => {
+                try {
+                    const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
+                    if (storedBoardList) {
+                        setBoardUUIDList(JSON.parse(storedBoardList));
+                    } else {
+                        setBoardUUIDList([]);
+                    }
+                } catch (error) {
+                    console.error('Failed to load stored board list', error);
                 }
-            } catch (error) {
-                console.error('Failed to load stored board list', error);
-            }
-        };
-    
-        loadStoredBoardList();
-    });
+            };
+
+            loadStoredBoardList();
+            console.log('home screen useFocusEffect');
+        }, [boardUUIDList])
+    );
 
     return (
         <View>
             {boardUUIDList.map((listItem, index) => (
-                <HomeItem key={index} navigation={navigation} listItem={listItem} />
+                <HomeItem key={index} navigation={navigation} listItem={listItem} boardUUIDList={boardUUIDList} />
             ))}
         </View>
     );

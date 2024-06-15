@@ -4,10 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import uuid from 'react-native-uuid';
 
-import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY } from '../utils/defaults';
+import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE } from '../utils/defaults';
+
+import ClearStorage from '../utils/dev_tools/clearStorage';
 
 export default function AddBoardScreen({ navigation }) {
-    const [textInput, setTextInput] = useState('My Bingo Board');
+    const [textInput, setTextInput] = useState(DEFAULT_TITLE);
     const [sizeInput, setSizeInput] = useState(DEFAULT_SIZE);
 
     function handleTextChange(value) {
@@ -26,7 +28,8 @@ export default function AddBoardScreen({ navigation }) {
             title: textInput,
             size: sizeInput,
             tasks: Array(sizeInput ** 2).fill('default task'),
-            pressedSquares: Array(sizeInput ** 2).fill(false)
+            pressedSquares: Array(sizeInput ** 2).fill(false),
+            pressedCount: 0
         };
 
         const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
@@ -42,6 +45,7 @@ export default function AddBoardScreen({ navigation }) {
         try {
             await AsyncStorage.setItem(BOARD_UUID_LIST_KEY, JSON.stringify(updatedBoardList));
             await AsyncStorage.setItem(JSON.stringify(newBoard.uuid), JSON.stringify(newBoard));
+            navigation.goBack();
         } catch (error) {
             console.log(error);
         }
@@ -72,17 +76,7 @@ export default function AddBoardScreen({ navigation }) {
                 title={'Create Board'} 
                 onPress={handleCreateBoard}
             />
-            <Button
-                title={'Dev tool: Clear everything'}
-                onPress={async () => {
-                    try {
-                        await AsyncStorage.clear();
-                        console.log('Dev message: Storage is cleared.');
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }}
-            />
+            <ClearStorage/>
         </View>
     )
 }

@@ -3,6 +3,8 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dialog from "react-native-dialog";
 
+import { BOARD_UUID_LIST_KEY } from '../../utils/defaults';
+
 function BingoSquare({ onPressSquare, onLongPressSquare, task, pressed }) {
     const [visible, setVisible] = useState(false);
     const [inputValue, setInputValue] = useState(task);
@@ -64,7 +66,7 @@ function BingoRow({ tasks, onPressSquare, onLongPressSquare, pressedSquares }) {
     )
 }
 
-export default function BingoBoard({ size, initialTitle, initialTasks, initialPressedSquares, initialPressedCount }) {
+export default function BingoBoard({ size, uuid, initialTitle, initialTasks, initialPressedSquares, initialPressedCount, boardUUIDList }) {
     const [title, setTitle] = useState(initialTitle);
     const [tasks, setTasks] = useState(initialTasks);
     const [pressedSquares, setPressedSquares] = useState(initialPressedSquares);
@@ -91,6 +93,60 @@ export default function BingoBoard({ size, initialTitle, initialTasks, initialPr
         setTasks(newTasks);
     };
 
+    // update title in boardUUIDList
+    useEffect(() => {
+        // Find the index of the board in the list
+        const index = boardUUIDList.findIndex(item => item[0] === uuid);
+
+        // If board exists in the list, update its title and move it to the front
+        if (index !== -1) {
+            boardUUIDList[index][1] = title;
+            // Move the updated board to the front of the array
+            const updatedList = [
+                boardUUIDList[index],
+                ...boardUUIDList.slice(0, index),
+                ...boardUUIDList.slice(index + 1)
+            ];
+
+            const updateBoardList = async () => {
+                try {
+                    await AsyncStorage.setItem(BOARD_UUID_LIST_KEY, JSON.stringify(updatedList));
+                    console.log('Successfully updated and moved board in boardUUIDList');
+                } catch (error) {
+                    console.error('Failed to update board in boardUUIDList', error);
+                }
+            };
+
+            updateBoardList();
+        }
+        console.log('update boardUUIDList in BingoBoard');
+    }, [title]);
+
+    // update title, tasks, or pressedSquares in board database if they change
+    useEffect(() => {
+        const newBoard = {
+            uuid: uuid,
+            title: title,
+            size: size,
+            tasks: tasks,
+            pressedSquares: pressedSquares,
+            pressedCount: pressedCount
+        };
+
+        const updateStorage = async () => {
+            try {
+                await AsyncStorage.setItem(JSON.stringify(uuid), JSON.stringify(newBoard));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        updateStorage();
+        console.log('updateStorage in BingoBoard');
+    }, [title, tasks, pressedSquares]);
+
+    // update counter for rows, columns, and diagonals filled
+    // also check for blackout
     useEffect(() => {
         // Check rows
         let rowsFilledCount = 0;

@@ -31,5 +31,8 @@ Allow the user to share the bingo board and current process by saving as an imag
 * Basic bingo board created: 7 June 2024
 * Detect filled out rows, columns, and diagonals: 7 June 2024
 * BingoBoard component can easily change size: 8 June 2024
+* Initial navigation setup: 8 June 2024
+* AddBoard form: 9 June 2024
+* Initial setup with AsyncStorage: 10 June 2024
 
 ## References used
