@@ -43,7 +43,7 @@ export default function HomeScreen({ navigation }) {
 
             loadStoredBoardList();
             console.log('home screen useFocusEffect');
-        }, [])
+        }, [boardUUIDList])
     );
 
     return (
