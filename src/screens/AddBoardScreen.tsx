@@ -28,7 +28,8 @@ export default function AddBoardScreen({ navigation }) {
             title: textInput,
             size: sizeInput,
             tasks: Array(sizeInput ** 2).fill('default task'),
-            pressedSquares: Array(sizeInput ** 2).fill(false)
+            pressedSquares: Array(sizeInput ** 2).fill(false),
+            pressedCount: 0
         };
 
         const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
