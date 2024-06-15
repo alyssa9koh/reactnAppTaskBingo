@@ -34,5 +34,6 @@ Allow the user to share the bingo board and current process by saving as an imag
 * Initial navigation setup: 8 June 2024
 * AddBoard form: 9 June 2024
 * Initial setup with AsyncStorage: 10 June 2024
+* Synced HomeScreen, BoardScreen, and BingoBoard with AsyncStorage: 14 June 2024
 
 ## References used
