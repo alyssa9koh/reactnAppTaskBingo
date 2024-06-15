@@ -6,6 +6,8 @@ import uuid from 'react-native-uuid';
 
 import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE, SELECTED_COLOR } from '../utils/defaults';
 
+import SizeSelectSlider from '../components/SizeSelectSlider/SizeSelectSlider';
+
 import ClearStorage from '../utils/dev_tools/clearStorage';
 
 export default function AddBoardScreen({ navigation }) {
@@ -83,19 +85,7 @@ export default function AddBoardScreen({ navigation }) {
                     </TouchableOpacity>
                 ))}
             </View>
-            <View style={styles.sizeSelect}>
-                <Text style={styles.text}>{`${sizeInput}x${sizeInput} board`}</Text>
-                <Slider
-                    style={styles.sizeSlider}
-                    minimumValue={MIN_SIZE}
-                    maximumValue={MAX_SIZE}
-                    step={1}
-                    value={DEFAULT_SIZE}
-                    minimumTrackTintColor="black"
-                    maximumTrackTintColor="black"
-                    onValueChange={handleSizeChange}
-                />
-            </View>
+            <SizeSelectSlider sizeInput={sizeInput} handleSizeChange={handleSizeChange}/>
             <Button 
                 title={'Create Board'} 
                 onPress={handleCreateBoard}
@@ -146,16 +136,5 @@ const styles = StyleSheet.create({
     },
     selectedTabText: {
         color: 'white'
-    },
-    sizeSelect: {
-        margin: 25,
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    sizeSlider: {
-        width: '60%',
-        padding: 10
     }
 });
