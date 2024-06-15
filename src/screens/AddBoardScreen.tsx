@@ -9,14 +9,14 @@ import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE } 
 import ClearStorage from '../utils/dev_tools/clearStorage';
 
 export default function AddBoardScreen({ navigation }) {
-    const [textInput, setTextInput] = useState(DEFAULT_TITLE);
+    const [titleInput, setTitleInput] = useState(DEFAULT_TITLE);
     const [sizeInput, setSizeInput] = useState(DEFAULT_SIZE);
 
-    function handleTextChange(value) {
-        setTextInput(value);
+    function handleTitleChange(value) {
+        setTitleInput(value);
     }
 
-    function handleValueChange(value) {
+    function handleSizeChange(value) {
         setSizeInput(value);
     }
 
@@ -25,7 +25,7 @@ export default function AddBoardScreen({ navigation }) {
 
         const newBoard = {
             uuid: uuid.v4(),
-            title: textInput,
+            title: titleInput,
             size: sizeInput,
             tasks: Array(sizeInput ** 2).fill('default task'),
             pressedSquares: Array(sizeInput ** 2).fill(false),
@@ -35,9 +35,9 @@ export default function AddBoardScreen({ navigation }) {
         const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
         let updatedBoardList;
         if (storedBoardList) {
-            updatedBoardList = [[newBoard.uuid, textInput], ...JSON.parse(storedBoardList)];
+            updatedBoardList = [[newBoard.uuid, titleInput], ...JSON.parse(storedBoardList)];
         } else {
-            updatedBoardList = [[newBoard.uuid, textInput]];
+            updatedBoardList = [[newBoard.uuid, titleInput]];
         }
 
         console.log(JSON.stringify(updatedBoardList));
@@ -56,8 +56,8 @@ export default function AddBoardScreen({ navigation }) {
             <TextInput
                 style={[styles.textInput, styles.text]}
                 placeholder="Enter board name"
-                value={textInput}
-                onChangeText={handleTextChange}
+                value={titleInput}
+                onChangeText={handleTitleChange}
             />
             <View style={styles.sizeSelect}>
                 <Text style={styles.text}>{`${sizeInput}x${sizeInput} board`}</Text>
@@ -69,7 +69,7 @@ export default function AddBoardScreen({ navigation }) {
                     value={DEFAULT_SIZE}
                     minimumTrackTintColor="black"
                     maximumTrackTintColor="black"
-                    onValueChange={handleValueChange}
+                    onValueChange={handleSizeChange}
                 />
             </View>
             <Button 
