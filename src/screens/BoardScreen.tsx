@@ -26,7 +26,7 @@ export default function BoardScreen({ route }) {
         }
 
         getBoardInfo();
-    });
+    }, []);
 
     return (
         <View style={styles.container}>

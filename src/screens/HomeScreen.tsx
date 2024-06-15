@@ -40,7 +40,8 @@ export default function HomeScreen({ navigation }) {
         };
     
         loadStoredBoardList();
-    });
+        console.log('home screen useEffect');
+    }, []);
 
     return (
         <View>
