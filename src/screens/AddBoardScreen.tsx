@@ -1,23 +1,35 @@
 import React, { useState } from 'react';
-import { Button, StyleSheet, View, Text, TextInput } from 'react-native';
+import { Button, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
 import uuid from 'react-native-uuid';
 
-import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE } from '../utils/defaults';
+import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE, SELECTED_COLOR } from '../utils/defaults';
+
+import SizeSelectSlider from '../components/SizeSelectSlider/SizeSelectSlider';
+import CustomLayout from '../components/AddBoard/CustomLayout/CustomLayout';
+import RandomizedLayout from '../components/AddBoard/RandomizedLayout/RandomizedLayout';
+import RandomizedTasks from '../components/AddBoard/RandomizedTasks/RandomizedTasks';
 
 import ClearStorage from '../utils/dev_tools/clearStorage';
 
 export default function AddBoardScreen({ navigation }) {
-    const [textInput, setTextInput] = useState(DEFAULT_TITLE);
+    const [titleInput, setTitleInput] = useState(DEFAULT_TITLE);
     const [sizeInput, setSizeInput] = useState(DEFAULT_SIZE);
 
-    function handleTextChange(value) {
-        setTextInput(value);
+    function handleTitleChange(value) {
+        setTitleInput(value);
     }
 
-    function handleValueChange(value) {
+    function handleSizeChange(value) {
         setSizeInput(value);
+    }
+
+    const [selectedTab, setSelectedTab] = useState(1);
+    const tabs = ['Custom Layout', 'Randomized Layout', 'Randomized Tasks'];
+
+    function handleTabSelect(index) {
+        setSelectedTab(index);
     }
 
     async function handleCreateBoard() {
@@ -25,7 +37,7 @@ export default function AddBoardScreen({ navigation }) {
 
         const newBoard = {
             uuid: uuid.v4(),
-            title: textInput,
+            title: titleInput,
             size: sizeInput,
             tasks: Array(sizeInput ** 2).fill('default task'),
             pressedSquares: Array(sizeInput ** 2).fill(false),
@@ -35,9 +47,9 @@ export default function AddBoardScreen({ navigation }) {
         const storedBoardList = await AsyncStorage.getItem(BOARD_UUID_LIST_KEY);
         let updatedBoardList;
         if (storedBoardList) {
-            updatedBoardList = [[newBoard.uuid, textInput], ...JSON.parse(storedBoardList)];
+            updatedBoardList = [[newBoard.uuid, titleInput], ...JSON.parse(storedBoardList)];
         } else {
-            updatedBoardList = [[newBoard.uuid, textInput]];
+            updatedBoardList = [[newBoard.uuid, titleInput]];
         }
 
         console.log(JSON.stringify(updatedBoardList));
@@ -56,22 +68,31 @@ export default function AddBoardScreen({ navigation }) {
             <TextInput
                 style={[styles.textInput, styles.text]}
                 placeholder="Enter board name"
-                value={textInput}
-                onChangeText={handleTextChange}
+                value={titleInput}
+                onChangeText={handleTitleChange}
             />
-            <View style={styles.sizeSelect}>
-                <Text style={styles.text}>{`${sizeInput}x${sizeInput} board`}</Text>
-                <Slider
-                    style={styles.sizeSlider}
-                    minimumValue={MIN_SIZE}
-                    maximumValue={MAX_SIZE}
-                    step={1}
-                    value={DEFAULT_SIZE}
-                    minimumTrackTintColor="black"
-                    maximumTrackTintColor="black"
-                    onValueChange={handleValueChange}
-                />
+            <View style={styles.tabsContainer}>
+                {tabs.map((tabName, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        onPress={() => {handleTabSelect(index)}}
+                        style={[
+                            styles.tab,
+                            selectedTab === index && styles.selectedTab
+                        ]}
+                    >
+                        <Text style={[
+                            styles.tabText,
+                            selectedTab === index && styles.selectedTabText
+                        ]}>{tabName}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
+            {
+                selectedTab === 0 ? <CustomLayout sizeInput={sizeInput} handleSizeChange={handleSizeChange}/> :
+                selectedTab === 1 ? <RandomizedLayout/> :
+                <RandomizedTasks sizeInput={sizeInput} handleSizeChange={handleSizeChange}/>
+            }
             <Button 
                 title={'Create Board'} 
                 onPress={handleCreateBoard}
@@ -100,15 +121,27 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         backgroundColor: 'white'
     },
-    sizeSelect: {
-        margin: 25,
+    tabsContainer: {
         flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
+        width: '90%',
         justifyContent: 'center',
+        alignContent: 'center'
     },
-    sizeSlider: {
-        width: '60%',
-        padding: 10
+    tab: {
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 15,
+        marginRight: 5,
+        width: '30%',
+        justifyContent: 'center'
+    },
+    selectedTab: {
+        backgroundColor: SELECTED_COLOR
+    },
+    tabText: {
+        textAlign: 'center'
+    },
+    selectedTabText: {
+        color: 'white'
     }
 });

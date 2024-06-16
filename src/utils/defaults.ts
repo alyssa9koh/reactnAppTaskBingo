@@ -8,3 +8,5 @@ export const DEFAULT_TASKS = Array(DEFAULT_SIZE ** 2).fill('default task');
 export const DEFAULT_PRESSED_SQUARES = Array(DEFAULT_SIZE ** 2).fill(false);
 
 export const BOARD_UUID_LIST_KEY = 'user_boards';
+
+export const SELECTED_COLOR = '#2196F3';
