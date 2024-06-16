@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import Slider from '@react-native-community/slider';
 
 import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE } from '../../utils/defaults';

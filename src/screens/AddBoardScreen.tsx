@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Button, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Slider from '@react-native-community/slider';
 import uuid from 'react-native-uuid';
 
-import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE, SELECTED_COLOR } from '../utils/defaults';
+import { DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE, SELECTED_COLOR } from '../utils/defaults';
 
-import SizeSelectSlider from '../components/SizeSelectSlider/SizeSelectSlider';
 import CustomLayout from '../components/AddBoard/CustomLayout/CustomLayout';
 import RandomizedLayout from '../components/AddBoard/RandomizedLayout/RandomizedLayout';
 import RandomizedTasks from '../components/AddBoard/RandomizedTasks/RandomizedTasks';
