@@ -7,6 +7,9 @@ import uuid from 'react-native-uuid';
 import { MIN_SIZE, MAX_SIZE, DEFAULT_SIZE, BOARD_UUID_LIST_KEY, DEFAULT_TITLE, SELECTED_COLOR } from '../utils/defaults';
 
 import SizeSelectSlider from '../components/SizeSelectSlider/SizeSelectSlider';
+import CustomLayout from '../components/AddBoard/CustomLayout/CustomLayout';
+import RandomizedLayout from '../components/AddBoard/RandomizedLayout/RandomizedLayout';
+import RandomizedTasks from '../components/AddBoard/RandomizedTasks/RandomizedTasks';
 
 import ClearStorage from '../utils/dev_tools/clearStorage';
 
@@ -85,7 +88,11 @@ export default function AddBoardScreen({ navigation }) {
                     </TouchableOpacity>
                 ))}
             </View>
-            <SizeSelectSlider sizeInput={sizeInput} handleSizeChange={handleSizeChange}/>
+            {
+                selectedTab === 0 ? <CustomLayout sizeInput={sizeInput} handleSizeChange={handleSizeChange}/> :
+                selectedTab === 1 ? <RandomizedLayout/> :
+                <RandomizedTasks sizeInput={sizeInput} handleSizeChange={handleSizeChange}/>
+            }
             <Button 
                 title={'Create Board'} 
                 onPress={handleCreateBoard}
