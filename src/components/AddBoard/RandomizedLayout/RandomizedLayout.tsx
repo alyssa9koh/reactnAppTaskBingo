@@ -4,10 +4,22 @@ import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from "rea
 import { AddBoardStyles } from "../AddBoardStyles";
 import { SELECTED_COLOR } from "../../../utils/defaults";
 
-function InputtedTask({ taskText }) {
+function InputtedTask({ taskText, handleRemoveTask }) {
     return (
-        <View>
-            <Text>{ taskText }</Text>
+        <View style={styles.inputtedTask}>
+            <Text style={[
+                styles.text
+            ]}>
+                { taskText }
+            </Text>
+            <TouchableOpacity style={styles.touchableButton} onPress={handleRemoveTask}>
+                <Text style={[
+                    styles.text,
+                    styles.touchableButtonText
+                ]}>
+                    X
+                </Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -26,10 +38,16 @@ export default function RandomizedLayout() {
         setTextInputValue('');
     }
 
+    function handleRemoveTask(index) {
+        const firstHalfNewTasks = inputtedTasks.slice(0, index);
+        const secondHalfNewTasks = inputtedTasks.slice(index+1);
+        setInputtedTasks(firstHalfNewTasks.concat(secondHalfNewTasks));
+    }
+
     return (
         <View style={AddBoardStyles.addBoardForm}>
             {inputtedTasks.map((taskText, index) => (
-                <InputtedTask key={index} taskText={taskText}/>
+                <InputtedTask key={index} taskText={taskText} handleRemoveTask={() => handleRemoveTask(index)}/>
             ))}
             <View style={styles.addTask}>
                 <TextInput
@@ -73,5 +91,10 @@ const styles = StyleSheet.create({
     },
     touchableButtonText: {
         color: 'white'
+    },
+    inputtedTask: {
+        flexDirection: 'row',
+        marginTop: 10,
+        alignItems: 'center'
     }
 });
