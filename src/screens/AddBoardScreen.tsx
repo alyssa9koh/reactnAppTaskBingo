@@ -101,6 +101,9 @@ export default function AddBoardScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    hidden: {
+        display: 'none'
+    },
     text: {
         fontSize: 17.5
     },
@@ -123,7 +126,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '90%',
         justifyContent: 'center',
-        alignContent: 'center'
+        alignContent: 'center',
+        marginTop: 10
     },
     tab: {
         backgroundColor: 'white',
