@@ -48,7 +48,7 @@ export default function RandomizedLayout() {
     return (
         <View style={AddBoardStyles.addBoardForm}>
             <View style={styles.suggestionView}>
-                <Text style={styles.text}>Meow</Text>
+                <Text style={styles.text}>{`${inputtedTasks.length} task${inputtedTasks.length > 1 ? 's' : ''} inputted.`}</Text>
             </View>
             {inputtedTasks.map((task, index) => (
                 <InputtedTask key={task.id} taskText={task.text} handleRemoveTask={() => handleRemoveTask(index)}/>
