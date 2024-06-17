@@ -46,6 +46,9 @@ export default function RandomizedLayout() {
 
     return (
         <View style={AddBoardStyles.addBoardForm}>
+            <View style={styles.suggestionView}>
+                <Text style={styles.text}>Meow</Text>
+            </View>
             {inputtedTasks.map((taskText, index) => (
                 <InputtedTask key={index} taskText={taskText} handleRemoveTask={() => handleRemoveTask(index)}/>
             ))}
@@ -76,6 +79,9 @@ const styles = StyleSheet.create({
         width: '75%',
         textAlign: 'center',
         backgroundColor: 'white'
+    },
+    suggestionView: {
+        marginTop: 10
     },
     addTask: {
         flexDirection: 'row',
