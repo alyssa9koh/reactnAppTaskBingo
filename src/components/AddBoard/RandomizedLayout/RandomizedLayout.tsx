@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from "react-native";
+import uuid from 'react-native-uuid';
 
 import { AddBoardStyles } from "../AddBoardStyles";
 import { SELECTED_COLOR } from "../../../utils/defaults";
@@ -33,7 +34,7 @@ export default function RandomizedLayout() {
     }
 
     function handleAddTask() {
-        const newInputtedTasks = [...inputtedTasks, textInputValue];
+        const newInputtedTasks = [...inputtedTasks, { id: uuid.v4(), text: textInputValue }];
         setInputtedTasks(newInputtedTasks);
         setTextInputValue('');
     }
@@ -49,8 +50,8 @@ export default function RandomizedLayout() {
             <View style={styles.suggestionView}>
                 <Text style={styles.text}>Meow</Text>
             </View>
-            {inputtedTasks.map((taskText, index) => (
-                <InputtedTask key={index} taskText={taskText} handleRemoveTask={() => handleRemoveTask(index)}/>
+            {inputtedTasks.map((task, index) => (
+                <InputtedTask key={task.id} taskText={task.text} handleRemoveTask={() => handleRemoveTask(index)}/>
             ))}
             <View style={styles.addTask}>
                 <TextInput
