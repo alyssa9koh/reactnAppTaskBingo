@@ -13,7 +13,7 @@ export default function SizeSelectSlider({ sizeInput, handleSizeChange }) {
                 minimumValue={MIN_SIZE}
                 maximumValue={MAX_SIZE}
                 step={1}
-                value={DEFAULT_SIZE}
+                value={sizeInput}
                 minimumTrackTintColor="black"
                 maximumTrackTintColor="black"
                 onValueChange={handleSizeChange}

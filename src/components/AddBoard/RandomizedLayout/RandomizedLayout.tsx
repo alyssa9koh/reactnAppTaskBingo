@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from "rea
 import uuid from 'react-native-uuid';
 
 import { AddBoardStyles } from "../AddBoardStyles";
-import { DEFAULT_SIZE, SELECTED_COLOR } from "../../../utils/defaults";
+import { MIN_SIZE, SELECTED_COLOR } from "../../../utils/defaults";
 
 import SizeSelectSlider from "../../SizeSelectSlider/SizeSelectSlider";
 
@@ -39,6 +39,16 @@ export default function RandomizedLayout() {
         const newInputtedTasks = [...inputtedTasks, { id: uuid.v4(), text: textInputValue }];
         setInputtedTasks(newInputtedTasks);
         setTextInputValue('');
+        
+        const inputtedTasksLength = newInputtedTasks.length;
+        const suggestedSize = Math.ceil(Math.sqrt(inputtedTasksLength));
+        if (suggestedSize < 3) {
+            setSizeInput(MIN_SIZE);
+        } else if (suggestedSize < sizeInput) {
+            // setSizeInput(sizeInput);
+        } else {
+            setSizeInput(suggestedSize);
+        }
     }
 
     function handleRemoveTask(index) {
@@ -47,10 +57,15 @@ export default function RandomizedLayout() {
         setInputtedTasks(firstHalfNewTasks.concat(secondHalfNewTasks));
     }
 
-    const [sizeInput, setSizeInput] = useState(DEFAULT_SIZE);
+    const [sizeInput, setSizeInput] = useState(MIN_SIZE);
 
     function handleSizeChange(value) {
-        setSizeInput(value);
+        if (value < sizeInput) {
+            console.log('poop');
+            setSizeInput(sizeInput);
+        } else {
+            setSizeInput(value);
+        }
     }
 
     return (
@@ -62,9 +77,9 @@ export default function RandomizedLayout() {
             <View style={styles.suggestionView}>
                 <Text style={styles.text}>{`${inputtedTasks.length} task${inputtedTasks.length === 1 ? '' : 's'} inputted.`}</Text>
             </View>
-            {inputtedTasks.map((task, index) => (
+            {/* {inputtedTasks.map((task, index) => (
                 <InputtedTask key={task.id} taskText={task.text} handleRemoveTask={() => handleRemoveTask(index)}/>
-            ))}
+            ))} */}
             <View style={styles.addTask}>
                 <TextInput
                     style={[styles.text, styles.textInput]}
