@@ -3,7 +3,9 @@ import { View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from "rea
 import uuid from 'react-native-uuid';
 
 import { AddBoardStyles } from "../AddBoardStyles";
-import { SELECTED_COLOR } from "../../../utils/defaults";
+import { DEFAULT_SIZE, SELECTED_COLOR } from "../../../utils/defaults";
+
+import SizeSelectSlider from "../../SizeSelectSlider/SizeSelectSlider";
 
 function InputtedTask({ taskText, handleRemoveTask }) {
     return (
@@ -45,8 +47,18 @@ export default function RandomizedLayout() {
         setInputtedTasks(firstHalfNewTasks.concat(secondHalfNewTasks));
     }
 
+    const [sizeInput, setSizeInput] = useState(DEFAULT_SIZE);
+
+    function handleSizeChange(value) {
+        setSizeInput(value);
+    }
+
     return (
         <View style={AddBoardStyles.addBoardForm}>
+            <SizeSelectSlider
+                sizeInput={sizeInput}
+                handleSizeChange={handleSizeChange}
+            />
             <View style={styles.suggestionView}>
                 <Text style={styles.text}>{`${inputtedTasks.length} task${inputtedTasks.length === 1 ? '' : 's'} inputted.`}</Text>
             </View>
